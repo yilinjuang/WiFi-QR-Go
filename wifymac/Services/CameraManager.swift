@@ -3,9 +3,11 @@ import Vision
 import SwiftUI
 
 class CameraManager: NSObject, ObservableObject {
-    @Published var qrCodeContent: String?
     @Published var error: Error?
     @Published var isAuthorized = false
+
+    // Callback for when a WiFi QR code is detected
+    var onWiFiQRCodeDetected: ((WiFiCredentials) -> Void)?
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
@@ -97,7 +99,6 @@ class CameraManager: NSObject, ObservableObject {
             layer.videoGravity = .resizeAspectFill
 
             // Mirror the preview horizontally for a more intuitive user experience
-            // This makes the preview act like a mirror, which is what users expect
             layer.connection?.automaticallyAdjustsVideoMirroring = false
             layer.connection?.isVideoMirrored = true
 
@@ -112,20 +113,14 @@ extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        let request = VNDetectBarcodesRequest { [weak self] request, error in
-            guard let results = request.results as? [VNBarcodeObservation], let firstResult = results.first else { return }
-
-            if let payloadString = firstResult.payloadStringValue {
+        // Use the QRCodeProcessingService to detect QR codes
+        QRCodeProcessingService.shared.processQRCodeFromCameraFrame(pixelBuffer) { [weak self] credentials in
+            if let credentials = credentials {
                 DispatchQueue.main.async {
-                    self?.qrCodeContent = payloadString
+                    // Notify about the detected QR code
+                    self?.onWiFiQRCodeDetected?(credentials)
                 }
             }
         }
-
-        // Set the barcode types to QR code only
-        request.symbologies = [.qr]
-
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
-        try? handler.perform([request])
     }
 }

@@ -10,13 +10,12 @@ import AppKit
 
 struct ContentView: View {
     @StateObject private var cameraManager = CameraManager()
-    @State private var wifiCredentials: WiFiCredentials?
-    @State private var showingCredentialsAlert = false
+    @EnvironmentObject private var viewModel: ContentViewModel
     @State private var isConnecting = false
     @State private var connectionError: Error?
     @State private var showingConnectionError = false
     @State private var connectionSuccess = false
-    @State private var showingManualConnection = false
+    @State private var passwordCopied = false
 
     var body: some View {
         VStack {
@@ -41,12 +40,21 @@ struct ContentView: View {
                         .padding()
                         .font(.title3)
                 } else if connectionSuccess {
-                    Text("Successfully connected to \(wifiCredentials?.ssid ?? "Wi-Fi")")
+                    Text("Successfully connected to \(viewModel.wifiCredentials?.ssid ?? "Wi-Fi")")
                         .foregroundColor(.green)
                         .font(.title3)
                         .padding()
-                } else if showingManualConnection, let credentials = wifiCredentials {
-                    ManualConnectionView(credentials: credentials)
+                } else if passwordCopied {
+                    Text("Password copied to clipboard")
+                        .foregroundColor(.blue)
+                        .font(.title3)
+                        .padding()
+                        .onAppear {
+                            // Reset the copied state after 3 seconds
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                passwordCopied = false
+                            }
+                        }
                 }
             } else {
                 VStack(spacing: 30) {
@@ -72,31 +80,44 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .onChange(of: cameraManager.qrCodeContent) { oldValue, newValue in
-            if let content = newValue, let credentials = WiFiCredentials.parse(from: content) {
-                wifiCredentials = credentials
-                showingCredentialsAlert = true
-                // Reset QR code content to allow scanning again
-                cameraManager.qrCodeContent = nil
+        .onAppear {
+            // Set up the callback for WiFi QR code detection when the view appears
+            cameraManager.onWiFiQRCodeDetected = { [weak viewModel] credentials in
+                viewModel?.wifiCredentials = credentials
+                viewModel?.showingCredentialsAlert = true
             }
         }
-        .alert("Wi-Fi Network Found", isPresented: $showingCredentialsAlert) {
+        .alert("Wi-Fi Network Found", isPresented: $viewModel.showingCredentialsAlert) {
             Button("Connect", role: .none) {
                 connectToWiFi()
             }
-            Button("Manual Connection", role: .none) {
-                showingManualConnection = true
+            Button("Copy Password", role: .none) {
+                if let password = viewModel.wifiCredentials?.password {
+                    ClipboardHelper.copyToClipboard(password)
+                    passwordCopied = true
+                }
             }
+            .disabled(viewModel.wifiCredentials?.password == nil)
             Button("Cancel", role: .cancel) {}
         } message: {
-            if let credentials = wifiCredentials {
-                Text("Would you like to connect to \(credentials.ssid)?")
+            if let credentials = viewModel.wifiCredentials {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Would you like to connect to \(credentials.ssid)?")
+                    if let password = credentials.password {
+                        Text("Password: \(password)")
+                            .font(.caption)
+                    }
+                }
             }
         }
         .alert("Connection Error", isPresented: $showingConnectionError) {
-            Button("Manual Connection", role: .none) {
-                showingManualConnection = true
+            Button("Copy Password", role: .none) {
+                if let password = viewModel.wifiCredentials?.password {
+                    ClipboardHelper.copyToClipboard(password)
+                    passwordCopied = true
+                }
             }
+            .disabled(viewModel.wifiCredentials?.password == nil)
             Button("Try Again", role: .none) {
                 connectToWiFi()
             }
@@ -111,7 +132,7 @@ struct ContentView: View {
     }
 
     private func connectToWiFi() {
-        guard let credentials = wifiCredentials else { return }
+        guard let credentials = viewModel.wifiCredentials else { return }
 
         isConnecting = true
 
@@ -135,4 +156,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(ContentViewModel())
 }

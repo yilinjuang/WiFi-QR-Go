@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct WifyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var contentViewModel = ContentViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -42,6 +43,7 @@ struct WifyApp: App {
                 .onAppear {
                     NSWindow.allowsAutomaticWindowTabbing = false
                 }
+                .environmentObject(contentViewModel)
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
@@ -91,10 +93,30 @@ struct WifyApp: App {
 
         openPanel.begin { response in
             if response == .OK, let url = openPanel.url {
-                // TODO: Process the QR code image
-                print("Selected image: \(url.path)")
-                // This would be where we'd process the QR code from the image
+                // Use the QRCodeProcessingService to process the image
+                QRCodeProcessingService.shared.processQRCodeImage(url) { credentials in
+                    if let credentials = credentials {
+                        DispatchQueue.main.async {
+                            self.contentViewModel.wifiCredentials = credentials
+                            self.contentViewModel.showingCredentialsAlert = true
+                        }
+                    } else {
+                        // Show an alert if no valid QR code was found
+                        let alert = NSAlert()
+                        alert.messageText = "No Wi-Fi QR Code Found"
+                        alert.informativeText = "The selected image does not contain a valid Wi-Fi QR code."
+                        alert.alertStyle = .warning
+                        alert.addButton(withTitle: "OK")
+                        alert.runModal()
+                    }
+                }
             }
         }
     }
+}
+
+// Shared view model to communicate between app and ContentView
+class ContentViewModel: ObservableObject {
+    @Published var wifiCredentials: WiFiCredentials?
+    @Published var showingCredentialsAlert = false
 }
