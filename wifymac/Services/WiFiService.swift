@@ -28,11 +28,16 @@ class WiFiService {
         }
 
         do {
-            // Scan for available networks
-            let networks = try interface.scanForNetworks(withSSID: nil)
+            // Convert SSID to Data for scanning
+            guard let ssidData = credentials.ssid.data(using: .utf8) else {
+                throw WiFiConnectionError.unsupportedNetwork
+            }
 
-            // Find the network with matching SSID
-            guard let network = networks.first(where: { $0.ssid == credentials.ssid }) else {
+            // Scan specifically for the network with the provided SSID
+            let networks = try interface.scanForNetworks(withSSID: ssidData)
+
+            // Check if the network was found
+            guard let network = networks.first else {
                 throw WiFiConnectionError.unsupportedNetwork
             }
 
