@@ -31,17 +31,8 @@ struct ContentView: View {
                                 .stroke(Color.gray, lineWidth: 1)
                         )
 
-                    // QR code scanning overlay
-                    VStack {
-                        Spacer()
-                        Text("Scan a Wi-Fi QR Code")
-                            .font(.title3)
-                            .padding(12)
-                            .background(Color.black.opacity(0.6))
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                            .padding(.bottom, 30)
-                    }
+                    // QR code capture overlay
+                    QRCodeCaptureOverlay()
                 }
                 .padding()
 
