@@ -10,43 +10,30 @@ import AppKit
 
 @main
 struct WifyApp: App {
-    @State private var isShowingSplash = true
-    @State private var showingAbout = false
-
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                ContentView()
-                    .frame(minWidth: 500, minHeight: 400)
-                    .onAppear {
-                        NSWindow.allowsAutomaticWindowTabbing = false
-                    }
-
-                if isShowingSplash {
-                    LaunchScreen()
-                        .transition(.opacity)
-                        .zIndex(1)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation(.easeOut(duration: 0.5)) {
-                                    isShowingSplash = false
-                                }
-                            }
-                        }
+            ContentView()
+                .frame(minWidth: 500, minHeight: 400)
+                .onAppear {
+                    NSWindow.allowsAutomaticWindowTabbing = false
                 }
-            }
-            .sheet(isPresented: $showingAbout) {
-                AboutView()
-            }
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .commands {
-            CommandGroup(replacing: .newItem) {}
-
-            CommandMenu("Help") {
+            CommandGroup(replacing: .appInfo) {
                 Button("About Wify") {
-                    showingAbout = true
+                    let options: [NSApplication.AboutPanelOptionKey: Any] = [
+                        .credits: NSAttributedString(
+                            string: "Quickly connect to WiFi by scanning QR code",
+                            attributes: [
+                                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                                .foregroundColor: NSColor.secondaryLabelColor
+                            ]
+                        ),
+                    ]
+
+                    NSApplication.shared.orderFrontStandardAboutPanel(options: options)
                 }
             }
         }

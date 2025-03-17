@@ -402,10 +402,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_CFBundleDisplayName = Wify;
 				INFOPLIST_KEY_CFBundleName = Wify;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -433,10 +433,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_CFBundleDisplayName = Wify;
 				INFOPLIST_KEY_CFBundleName = Wify;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
