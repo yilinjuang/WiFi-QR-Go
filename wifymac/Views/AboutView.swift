@@ -9,7 +9,7 @@ struct AboutView: View {
                 .font(.system(size: 60))
                 .foregroundColor(.blue)
 
-            Text("Wi-Fi QR Scanner")
+            Text("Wify")
                 .font(.title)
                 .fontWeight(.bold)
 

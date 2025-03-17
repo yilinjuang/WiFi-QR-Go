@@ -1,4 +1,4 @@
-# macOS QR Code Wi-Fi Connector
+# Wify for Mac
 
 A macOS application that scans Wi-Fi QR codes using the front camera and connects to the corresponding Wi-Fi network.
 

@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E1AD02452D8820B6009B6637 /* wifymac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wifymac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1AD02452D8820B6009B6637 /* Wify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AD02562D8820B8009B6637 /* wifymacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -85,7 +85,7 @@
 		E1AD02462D8820B6009B6637 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1AD02452D8820B6009B6637 /* wifymac.app */,
+				E1AD02452D8820B6009B6637 /* Wify.app */,
 				E1AD02562D8820B8009B6637 /* wifymacTests.xctest */,
 				E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */,
 			);
@@ -114,7 +114,7 @@
 			packageProductDependencies = (
 			);
 			productName = wifymac;
-			productReference = E1AD02452D8820B6009B6637 /* wifymac.app */;
+			productReference = E1AD02452D8820B6009B6637 /* Wify.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E1AD02552D8820B8009B6637 /* wifymacTests */ = {
@@ -404,13 +404,15 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = Wify;
+				INFOPLIST_KEY_CFBundleName = Wify;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymac;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Wify;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -433,13 +435,15 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = Wify;
+				INFOPLIST_KEY_CFBundleName = Wify;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymac;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Wify;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};

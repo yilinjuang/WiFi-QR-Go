@@ -1,5 +1,5 @@
 //
-//  wifymacApp.swift
+//  WifyApp.swift
 //  wifymac
 //
 //  Created by Yi-Lin Juang on 2025/3/17.
@@ -9,7 +9,7 @@ import SwiftUI
 import AppKit
 
 @main
-struct wifymacApp: App {
+struct WifyApp: App {
     @State private var isShowingSplash = true
     @State private var showingAbout = false
 
@@ -45,7 +45,7 @@ struct wifymacApp: App {
             CommandGroup(replacing: .newItem) {}
 
             CommandMenu("Help") {
-                Button("About Wi-Fi QR Scanner") {
+                Button("About Wify") {
                     showingAbout = true
                 }
             }

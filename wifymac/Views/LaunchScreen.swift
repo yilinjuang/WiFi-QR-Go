@@ -8,7 +8,7 @@ struct LaunchScreen: View {
                 .font(.system(size: 80))
                 .foregroundColor(.blue)
 
-            Text("Wi-Fi QR Scanner")
+            Text("Wify")
                 .font(.largeTitle)
                 .fontWeight(.bold)
 

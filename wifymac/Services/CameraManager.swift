@@ -44,10 +44,21 @@ class CameraManager: NSObject, ObservableObject {
         // Get front camera
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
             // Fallback to any available camera if front camera is not available
-            guard AVCaptureDevice.default(for: .video) != nil else {
+            guard let device = AVCaptureDevice.default(for: .video) else {
                 error = NSError(domain: "CameraManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No camera available"])
                 return
             }
+
+            do {
+                let input = try AVCaptureDeviceInput(device: device)
+                if session.canAddInput(input) {
+                    session.addInput(input)
+                }
+            } catch {
+                self.error = error
+                return
+            }
+
             return
         }
 
@@ -73,15 +84,23 @@ class CameraManager: NSObject, ObservableObject {
     }
 
     func stopSession() {
-        captureSession?.stopRunning()
+        self.captureSession?.stopRunning()
     }
 
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
-        guard let captureSession = captureSession else { return nil }
+        guard let session = self.captureSession else {
+            return nil
+        }
 
         if self.previewLayer == nil {
-            let layer = AVCaptureVideoPreviewLayer(session: captureSession)
+            let layer = AVCaptureVideoPreviewLayer(session: session)
             layer.videoGravity = .resizeAspectFill
+
+            // Mirror the preview horizontally for a more intuitive user experience
+            // This makes the preview act like a mirror, which is what users expect
+            layer.connection?.automaticallyAdjustsVideoMirroring = false
+            layer.connection?.isVideoMirrored = true
+
             self.previewLayer = layer
         }
 
