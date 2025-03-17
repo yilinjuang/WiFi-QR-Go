@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -44,7 +45,9 @@ struct WifyApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
+        .commandsRemoved()
         .commands {
+            // App menu - About Wify
             CommandGroup(replacing: .appInfo) {
                 Button("About Wify") {
                     let options: [NSApplication.AboutPanelOptionKey: Any] = [
@@ -59,6 +62,38 @@ struct WifyApp: App {
 
                     NSApplication.shared.orderFrontStandardAboutPanel(options: options)
                 }
+            }
+
+            // App menu - Quit
+            CommandGroup(replacing: .appTermination) {
+                Button("Quit") {
+                    NSApplication.shared.terminate(nil)
+                }
+                .keyboardShortcut("q", modifiers: .command)
+            }
+
+            // File menu - Import QR code
+            CommandGroup(replacing: .importExport) {
+                Button("Import QR code") {
+                    importQRCodeFromFile()
+                }
+                .keyboardShortcut("i", modifiers: .command)
+            }
+        }
+    }
+
+    func importQRCodeFromFile() {
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.canChooseFiles = true
+        openPanel.allowedContentTypes = [UTType.image]
+
+        openPanel.begin { response in
+            if response == .OK, let url = openPanel.url {
+                // TODO: Process the QR code image
+                print("Selected image: \(url.path)")
+                // This would be where we'd process the QR code from the image
             }
         }
     }
