@@ -12,6 +12,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Center the window when the app launches
+        if let window = NSApplication.shared.windows.first {
+            // Get the screen frame
+            let screenFrame = NSScreen.main?.visibleFrame ?? NSRect.zero
+
+            // Calculate the centered position
+            let x = screenFrame.origin.x + (screenFrame.width - window.frame.width) / 2
+            let y = screenFrame.origin.y + (screenFrame.height - window.frame.height) / 2
+
+            // Set the window position
+            window.setFrameOrigin(NSPoint(x: x, y: y))
+            window.makeKeyAndOrderFront(nil)
+        }
+    }
 }
 
 @main
@@ -21,7 +37,7 @@ struct WifyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minWidth: 500, minHeight: 400)
+                .frame(minWidth: 800, minHeight: 600)
                 .onAppear {
                     NSWindow.allowsAutomaticWindowTabbing = false
                 }

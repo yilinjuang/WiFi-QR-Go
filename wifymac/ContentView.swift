@@ -24,7 +24,7 @@ struct ContentView: View {
                 ZStack {
                     // Camera preview
                     CameraPreviewView(previewLayer: cameraManager.getPreviewLayer())
-                        .frame(minWidth: 400, minHeight: 300)
+                        .frame(minWidth: 700, minHeight: 500)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
@@ -35,12 +35,12 @@ struct ContentView: View {
                     VStack {
                         Spacer()
                         Text("Scan a Wi-Fi QR Code")
-                            .font(.headline)
-                            .padding(8)
+                            .font(.title3)
+                            .padding(12)
                             .background(Color.black.opacity(0.6))
                             .foregroundColor(.white)
                             .cornerRadius(8)
-                            .padding(.bottom, 20)
+                            .padding(.bottom, 30)
                     }
                 }
                 .padding()
@@ -48,23 +48,26 @@ struct ContentView: View {
                 if isConnecting {
                     ProgressView("Connecting to Wi-Fi...")
                         .padding()
+                        .font(.title3)
                 } else if connectionSuccess {
                     Text("Successfully connected to \(wifiCredentials?.ssid ?? "Wi-Fi")")
                         .foregroundColor(.green)
+                        .font(.title3)
                         .padding()
                 } else if showingManualConnection, let credentials = wifiCredentials {
                     ManualConnectionView(credentials: credentials)
                 }
             } else {
-                VStack(spacing: 20) {
+                VStack(spacing: 30) {
                     Image(systemName: "camera.fill")
-                        .font(.system(size: 60))
+                        .font(.system(size: 80))
                         .foregroundColor(.gray)
 
                     Text("Camera access is required")
-                        .font(.headline)
+                        .font(.title)
 
                     Text("Please allow camera access in System Settings")
+                        .font(.title3)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.secondary)
 
@@ -72,12 +75,12 @@ struct ContentView: View {
                         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera")!)
                     }
                     .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
                 }
-                .padding()
+                .padding(50)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .frame(width: 500, height: 400)
         .onChange(of: cameraManager.qrCodeContent) { oldValue, newValue in
             if let content = newValue, let credentials = WiFiCredentials.parse(from: content) {
                 wifiCredentials = credentials
