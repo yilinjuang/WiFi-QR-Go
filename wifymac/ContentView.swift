@@ -14,8 +14,7 @@ struct ContentView: View {
     @State private var isConnecting = false
     @State private var connectionError: Error?
     @State private var showingConnectionError = false
-    @State private var connectionSuccess = false
-    @State private var passwordCopied = false
+    @State private var activeToast: ToastMessage?
 
     var body: some View {
         VStack {
@@ -30,32 +29,10 @@ struct ContentView: View {
                                 .stroke(Color.gray, lineWidth: 1)
                         )
 
-                    // QR code capture overlay
-                    QRCodeCaptureOverlay()
+                    // QR code capture overlay with toast functionality
+                    QRCodeCaptureOverlay(toastMessage: activeToast)
                 }
                 .padding()
-
-                if isConnecting {
-                    ProgressView("Connecting to Wi-Fi...")
-                        .padding()
-                        .font(.title3)
-                } else if connectionSuccess {
-                    Text("Successfully connected to \(viewModel.wifiCredentials?.ssid ?? "Wi-Fi")")
-                        .foregroundColor(.green)
-                        .font(.title3)
-                        .padding()
-                } else if passwordCopied {
-                    Text("Password copied to clipboard")
-                        .foregroundColor(.blue)
-                        .font(.title3)
-                        .padding()
-                        .onAppear {
-                            // Reset the copied state after 3 seconds
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                passwordCopied = false
-                            }
-                        }
-                }
             } else {
                 VStack(spacing: 30) {
                     Image(systemName: "camera.fill")
@@ -87,34 +64,30 @@ struct ContentView: View {
                 viewModel?.showingCredentialsAlert = true
             }
         }
-        .alert("Wi-Fi Network Found", isPresented: $viewModel.showingCredentialsAlert) {
+        .alert("Connect to \(viewModel.wifiCredentials?.ssid ?? "Wi-Fi")?", isPresented: $viewModel.showingCredentialsAlert) {
             Button("Connect", role: .none) {
                 connectToWiFi()
             }
             Button("Copy Password", role: .none) {
                 if let password = viewModel.wifiCredentials?.password {
                     ClipboardHelper.copyToClipboard(password)
-                    passwordCopied = true
+                    showToast(.info(message: "Password copied to clipboard", icon: "doc.on.clipboard"))
                 }
             }
             .disabled(viewModel.wifiCredentials?.password == nil)
             Button("Cancel", role: .cancel) {}
         } message: {
             if let credentials = viewModel.wifiCredentials {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Would you like to connect to \(credentials.ssid)?")
-                    if let password = credentials.password {
-                        Text("Password: \(password)")
-                            .font(.caption)
-                    }
-                }
+                Text(createNetworkDetailsMessage(credentials))
+            } else {
+                Text("No network information available")
             }
         }
         .alert("Connection Error", isPresented: $showingConnectionError) {
             Button("Copy Password", role: .none) {
                 if let password = viewModel.wifiCredentials?.password {
                     ClipboardHelper.copyToClipboard(password)
-                    passwordCopied = true
+                    showToast(.info(message: "Password copied to clipboard", icon: "doc.on.clipboard"))
                 }
             }
             .disabled(viewModel.wifiCredentials?.password == nil)
@@ -131,21 +104,63 @@ struct ContentView: View {
         }
     }
 
+    private func showToast(_ toast: ToastMessage, duration: Double? = 3.0) {
+        withAnimation {
+            activeToast = toast
+        }
+
+        // Only auto-dismiss if a duration is provided
+        if let duration = duration {
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                withAnimation {
+                    if self.activeToast?.message == toast.message {
+                        self.activeToast = nil
+                    }
+                }
+            }
+        }
+    }
+
+    private func createNetworkDetailsMessage(_ credentials: WiFiCredentials) -> String {
+        var message = "SSID: \(credentials.ssid)"
+
+        if let password = credentials.password, !password.isEmpty {
+            message += "\nPassword: \(password)"
+        } else if credentials.encryptionType == "nopass" {
+            message += "\nPassword: None (Open Network)"
+        }
+
+        if let encType = credentials.encryptionType {
+            message += "\nSecurity: \(encType)"
+        } else {
+            message += "\nSecurity: Unknown"
+        }
+
+        return message
+    }
+
     private func connectToWiFi() {
         guard let credentials = viewModel.wifiCredentials else { return }
 
         isConnecting = true
+        // Show connecting toast with ProgressView and make it persist
+        showToast(ToastMessage.connecting(message: "Connecting to \(credentials.ssid)"), duration: nil)
 
         Task {
             do {
                 try await WiFiService.shared.connect(to: credentials)
                 await MainActor.run {
                     isConnecting = false
-                    connectionSuccess = true
+                    // Replace the connecting toast with success toast
+                    showToast(.success(message: "Successfully connected to \(credentials.ssid)", icon: "wifi"))
                 }
             } catch {
                 await MainActor.run {
                     isConnecting = false
+                    // Clear the connecting toast when showing the error alert
+                    withAnimation {
+                        activeToast = nil
+                    }
                     connectionError = error
                     showingConnectionError = true
                 }

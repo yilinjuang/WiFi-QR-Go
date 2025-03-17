@@ -58,7 +58,6 @@ class QRCodeProcessingService {
                 }
             }
 
-            print("No valid Wi-Fi QR code found in the image")
             completion(nil)
         }
 
