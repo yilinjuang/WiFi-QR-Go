@@ -35,7 +35,6 @@ class CameraManager: NSObject, ObservableObject {
         @unknown default:
             self.isAuthorized = false
         }
-        self.isAuthorized = false
     }
 
     func setupCaptureSession() {
@@ -63,9 +62,10 @@ class CameraManager: NSObject, ObservableObject {
                 videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
             }
 
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self.captureSession = session
+
+            DispatchQueue.global(qos: .userInitiated).async {
                 session.startRunning()
-                self?.captureSession = session
             }
         } catch {
             self.error = error
@@ -79,11 +79,13 @@ class CameraManager: NSObject, ObservableObject {
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         guard let captureSession = captureSession else { return nil }
 
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.videoGravity = .resizeAspectFill
-        self.previewLayer = previewLayer
+        if self.previewLayer == nil {
+            let layer = AVCaptureVideoPreviewLayer(session: captureSession)
+            layer.videoGravity = .resizeAspectFill
+            self.previewLayer = layer
+        }
 
-        return previewLayer
+        return self.previewLayer
     }
 }
 
