@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import wifymac
+@testable import Wify
 
 struct wifymacTests {
 

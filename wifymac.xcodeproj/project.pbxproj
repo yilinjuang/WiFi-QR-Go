@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E1AD02452D8820B6009B6637 /* Wify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wify.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1AD02452D8820B6009B6637 /* Wify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Wify.app; path = Wify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AD02562D8820B8009B6637 /* wifymacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -463,7 +463,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/wifymac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/wifymac";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wify";
 			};
 			name = Debug;
 		};
@@ -481,7 +481,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/wifymac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/wifymac";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wify";
 			};
 			name = Release;
 		};
