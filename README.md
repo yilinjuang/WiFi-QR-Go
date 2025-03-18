@@ -2,6 +2,32 @@
 
 A macOS application that scans Wi-Fi QR codes and connects to the corresponding Wi-Fi network.
 
+## Installation
+
+1. Go to the [Releases](https://github.com/yilinjuang/wify-mac/releases) page
+2. Download the latest release (Wify.zip)
+3. Extract the zip file
+4. Drag the Wify application to your Applications folder
+5. Open Wify from your Applications folder
+
+If you receive a security warning when first opening the app, right-click (or Control-click) on the app icon and select "Open" from the context menu, then click "Open" in the dialog that appears.
+
+## Usage
+
+1. Launch the application
+2. Grant camera permissions when prompted
+3. Point your camera at a Wi-Fi QR code
+4. Confirm the connection when prompted
+5. The app will connect to the Wi-Fi network
+
+## Why I Built This
+
+I travel and work remotely a lot. Every new place—hotels, cafés, coworking spaces—means connecting to a new Wi-Fi network. As an Android and Mac user, I face a common hassle: Wi-Fi credentials don't sync between devices, so I have to reconnect manually on my Mac.
+
+Modern Android phones can generate QR codes for connected networks. This macOS app lets you scan those codes and connect instantly—no typing long passwords or searching through networks.
+
+I also built [Wify for Android](https://github.com/yilinjuang/wify), which extracts Wi-Fi details from printed text and generates QR codes. It complements this Mac app but isn't required.
+
 ## Features
 
 - Scan Wi-Fi QR codes using your Mac's camera
@@ -17,36 +43,19 @@ A macOS application that scans Wi-Fi QR codes and connects to the corresponding 
 - macOS 11.0 (Big Sur) or later
 - Mac with a built-in camera or connected webcam
 
-## Usage
+## Privacy
 
-1. Launch the application
-2. Grant camera permissions when prompted
-3. Point your camera at a Wi-Fi QR code
-4. Confirm the connection when prompted
-5. The app will connect to the Wi-Fi network
+- Only accesses the camera when the app is running
+- Does not store or transmit Wi-Fi credentials
+- Only connects to networks with user confirmation
 
 ## Technical Details
-
-The application is built using:
 
 - Swift 5
 - SwiftUI for the user interface
 - AVFoundation for camera access
 - Vision framework for QR code detection
 - CoreWLAN for Wi-Fi connectivity
-
-## Privacy
-
-This application:
-
-- Only accesses the camera when the app is running
-- Does not store or transmit Wi-Fi credentials
-- Only connects to networks with user confirmation
-
-## Development
-
-- Xcode 14.0 or later recommended for development
-- No external dependencies required
 
 ## License
 
