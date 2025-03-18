@@ -54,7 +54,7 @@ struct WifyApp: App {
                 Button("About Wify") {
                     let options: [NSApplication.AboutPanelOptionKey: Any] = [
                         .credits: NSAttributedString(
-                            string: "Quickly connect to WiFi by scanning QR code",
+                            string: "Scan to Connect - WiFi QR for Mac",
                             attributes: [
                                 .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
                                 .foregroundColor: NSColor.secondaryLabelColor
