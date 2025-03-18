@@ -5,9 +5,8 @@ import AppKit
 enum WiFiConnectionError: Error {
     case noInterface
     case connectionFailed(String)
-    case unsupportedNetwork
+    case networkNotFound
     case missingPassword
-    case unknown
 }
 
 class WiFiService {
@@ -30,16 +29,22 @@ class WiFiService {
         do {
             // Convert SSID to Data for scanning
             guard let ssidData = credentials.ssid.data(using: .utf8) else {
-                throw WiFiConnectionError.unsupportedNetwork
+                throw WiFiConnectionError.networkNotFound
             }
 
             // Scan specifically for the network with the provided SSID
             let networks = try interface.scanForNetworks(withSSID: ssidData)
 
             // Check if the network was found
-            guard let network = networks.first else {
-                throw WiFiConnectionError.unsupportedNetwork
+            guard !networks.isEmpty else {
+                throw WiFiConnectionError.networkNotFound
             }
+
+            // If multiple networks with the same SSID were found, pick the one with the strongest signal
+            let network = networks.sorted { network1, network2 in
+                // Higher RSSI value (less negative) means stronger signal
+                return network1.rssiValue > network2.rssiValue
+            }.first!
 
             if let password = credentials.password {
                 // Connect to network with password
