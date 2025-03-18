@@ -57,6 +57,10 @@ I also built [Wify for Android](https://github.com/yilinjuang/wify), which extra
 - Vision framework for QR code detection
 - CoreWLAN for Wi-Fi connectivity
 
+## Demo
+
+https://github.com/user-attachments/assets/e979d7e9-d065-4e7e-964a-47d9541b1968
+
 ## License
 
 MIT
