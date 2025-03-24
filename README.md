@@ -4,7 +4,7 @@ A macOS application that scans Wi-Fi QR codes and connects to the corresponding 
 
 ## Installation
 
-1. Install the app from the [App Store](https://apps.apple.com/tw/app/wifi-qr-go/id6743514951)
+1. Install the app from the [App Store](https://apps.apple.com/app/wifi-qr-go/id6743514951)
 2. Open WiFi QR Go from your Applications folder
 
 ## Usage

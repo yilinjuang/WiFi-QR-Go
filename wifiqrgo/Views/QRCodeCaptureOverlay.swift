@@ -45,7 +45,7 @@ struct QRCodeCaptureOverlay: View {
                                 .font(.system(size: 18))
                         }
 
-                        Text(toastMessage?.message ?? "Scan a Wifi QR code")
+                        Text(toastMessage?.message ?? "Scan a WiFi QR code")
                             .font(.headline)
                     }
                     .padding(.horizontal, 16)
