@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1AD02442D8820B6009B6637"
-               BuildableName = "Wify.app"
-               BlueprintName = "wifymac"
-               ReferencedContainer = "container:wifymac.xcodeproj">
+               BuildableName = "WiFi QR Go.app"
+               BlueprintName = "WiFiQRGo"
+               ReferencedContainer = "container:wifiqrgo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,30 +29,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1AD02552D8820B8009B6637"
-               BuildableName = "wifymacTests.xctest"
-               BlueprintName = "wifymacTests"
-               ReferencedContainer = "container:wifymac.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1AD025F2D8820B8009B6637"
-               BuildableName = "wifymacUITests.xctest"
-               BlueprintName = "wifymacUITests"
-               ReferencedContainer = "container:wifymac.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -69,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1AD02442D8820B6009B6637"
-            BuildableName = "Wify.app"
-            BlueprintName = "wifymac"
-            ReferencedContainer = "container:wifymac.xcodeproj">
+            BuildableName = "WiFi QR Go.app"
+            BlueprintName = "WiFiQRGo"
+            ReferencedContainer = "container:wifiqrgo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -86,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1AD02442D8820B6009B6637"
-            BuildableName = "Wify.app"
-            BlueprintName = "wifymac"
-            ReferencedContainer = "container:wifymac.xcodeproj">
+            BuildableName = "WiFi QR Go.app"
+            BlueprintName = "WiFiQRGo"
+            ReferencedContainer = "container:wifiqrgo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

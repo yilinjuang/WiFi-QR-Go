@@ -1,6 +1,6 @@
 //
-//  WifyApp.swift
-//  wifymac
+//  WiFiQRGoApp.swift
+//  WiFiQRGo
 //
 //  Created by Yi-Lin Juang on 2025/3/17.
 //
@@ -32,7 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-struct WifyApp: App {
+struct WiFiQRGoApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var contentViewModel = ContentViewModel()
 
@@ -49,12 +49,12 @@ struct WifyApp: App {
         .windowResizability(.contentSize)
         .commandsRemoved()
         .commands {
-            // App menu - About Wify
+            // App menu - About WiFi QR Go
             CommandGroup(replacing: .appInfo) {
-                Button("About Wify") {
+                Button("About WiFi QR Go") {
                     let options: [NSApplication.AboutPanelOptionKey: Any] = [
                         .credits: NSAttributedString(
-                            string: "Scan to Connect - WiFi QR for Mac",
+                            string: "Scan to Connect - WiFi QR Go",
                             attributes: [
                                 .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
                                 .foregroundColor: NSColor.secondaryLabelColor

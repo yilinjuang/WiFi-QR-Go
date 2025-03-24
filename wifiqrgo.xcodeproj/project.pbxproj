@@ -6,43 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		E1AD02572D8820B8009B6637 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E1AD023D2D8820B6009B6637 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E1AD02442D8820B6009B6637;
-			remoteInfo = wifymac;
-		};
-		E1AD02612D8820B8009B6637 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E1AD023D2D8820B6009B6637 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E1AD02442D8820B6009B6637;
-			remoteInfo = wifymac;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		E1AD02452D8820B6009B6637 /* Wify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wify.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1AD02562D8820B8009B6637 /* wifymacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wifymacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1AD02452D8820B6009B6637 /* WiFi QR Go.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WiFi QR Go.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		E1AD02472D8820B6009B6637 /* wifymac */ = {
+		E1D2B43F2D9112010056C9EF /* wifiqrgo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = wifymac;
-			sourceTree = "<group>";
-		};
-		E1AD02592D8820B8009B6637 /* wifymacTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = wifymacTests;
-			sourceTree = "<group>";
-		};
-		E1AD02632D8820B8009B6637 /* wifymacUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = wifymacUITests;
+			path = wifiqrgo;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -55,29 +26,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E1AD02532D8820B8009B6637 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1AD025D2D8820B8009B6637 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		E1AD023C2D8820B6009B6637 = {
 			isa = PBXGroup;
 			children = (
-				E1AD02472D8820B6009B6637 /* wifymac */,
-				E1AD02592D8820B8009B6637 /* wifymacTests */,
-				E1AD02632D8820B8009B6637 /* wifymacUITests */,
+				E1D2B43F2D9112010056C9EF /* wifiqrgo */,
 				E1AD02462D8820B6009B6637 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,9 +40,7 @@
 		E1AD02462D8820B6009B6637 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E1AD02452D8820B6009B6637 /* Wify.app */,
-				E1AD02562D8820B8009B6637 /* wifymacTests.xctest */,
-				E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */,
+				E1AD02452D8820B6009B6637 /* WiFi QR Go.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E1AD02442D8820B6009B6637 /* wifymac */ = {
+		E1AD02442D8820B6009B6637 /* WiFiQRGo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E1AD026A2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymac" */;
+			buildConfigurationList = E1AD026A2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "WiFiQRGo" */;
 			buildPhases = (
 				E1AD02412D8820B6009B6637 /* Sources */,
 				E1AD02422D8820B6009B6637 /* Frameworks */,
@@ -108,60 +61,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				E1AD02472D8820B6009B6637 /* wifymac */,
+				E1D2B43F2D9112010056C9EF /* wifiqrgo */,
 			);
-			name = wifymac;
+			name = WiFiQRGo;
 			packageProductDependencies = (
 			);
-			productName = wifymac;
-			productReference = E1AD02452D8820B6009B6637 /* Wify.app */;
+			productName = wifiqrgo;
+			productReference = E1AD02452D8820B6009B6637 /* WiFi QR Go.app */;
 			productType = "com.apple.product-type.application";
-		};
-		E1AD02552D8820B8009B6637 /* wifymacTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E1AD026D2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymacTests" */;
-			buildPhases = (
-				E1AD02522D8820B8009B6637 /* Sources */,
-				E1AD02532D8820B8009B6637 /* Frameworks */,
-				E1AD02542D8820B8009B6637 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E1AD02582D8820B8009B6637 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E1AD02592D8820B8009B6637 /* wifymacTests */,
-			);
-			name = wifymacTests;
-			packageProductDependencies = (
-			);
-			productName = wifymacTests;
-			productReference = E1AD02562D8820B8009B6637 /* wifymacTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		E1AD025F2D8820B8009B6637 /* wifymacUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E1AD02702D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymacUITests" */;
-			buildPhases = (
-				E1AD025C2D8820B8009B6637 /* Sources */,
-				E1AD025D2D8820B8009B6637 /* Frameworks */,
-				E1AD025E2D8820B8009B6637 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E1AD02622D8820B8009B6637 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E1AD02632D8820B8009B6637 /* wifymacUITests */,
-			);
-			name = wifymacUITests;
-			packageProductDependencies = (
-			);
-			productName = wifymacUITests;
-			productReference = E1AD02602D8820B8009B6637 /* wifymacUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -176,17 +83,9 @@
 					E1AD02442D8820B6009B6637 = {
 						CreatedOnToolsVersion = 16.2;
 					};
-					E1AD02552D8820B8009B6637 = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = E1AD02442D8820B6009B6637;
-					};
-					E1AD025F2D8820B8009B6637 = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = E1AD02442D8820B6009B6637;
-					};
 				};
 			};
-			buildConfigurationList = E1AD02402D8820B6009B6637 /* Build configuration list for PBXProject "wifymac" */;
+			buildConfigurationList = E1AD02402D8820B6009B6637 /* Build configuration list for PBXProject "wifiqrgo" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,29 +99,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E1AD02442D8820B6009B6637 /* wifymac */,
-				E1AD02552D8820B8009B6637 /* wifymacTests */,
-				E1AD025F2D8820B8009B6637 /* wifymacUITests */,
+				E1AD02442D8820B6009B6637 /* WiFiQRGo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E1AD02432D8820B6009B6637 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1AD02542D8820B8009B6637 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1AD025E2D8820B8009B6637 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,34 +122,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E1AD02522D8820B8009B6637 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1AD025C2D8820B8009B6637 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		E1AD02582D8820B8009B6637 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E1AD02442D8820B6009B6637 /* wifymac */;
-			targetProxy = E1AD02572D8820B8009B6637 /* PBXContainerItemProxy */;
-		};
-		E1AD02622D8820B8009B6637 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E1AD02442D8820B6009B6637 /* wifymac */;
-			targetProxy = E1AD02612D8820B8009B6637 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E1AD02682D8820B8009B6637 /* Debug */ = {
@@ -392,18 +248,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = wifymac/wifymac.entitlements;
+				CODE_SIGN_ENTITLEMENTS = wifiqrgo/wifiqrgo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_ASSET_PATHS = "\"wifymac/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_ASSET_PATHS = "\"wifiqrgo/Preview Content\"";
 				DEVELOPMENT_TEAM = D4FZ7G9587;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Wify;
-				INFOPLIST_KEY_CFBundleName = Wify;
+				INFOPLIST_KEY_CFBundleDisplayName = "WiFi QR Go";
+				INFOPLIST_KEY_CFBundleName = "WiFi QR Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -411,9 +267,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymac;
-				PRODUCT_NAME = Wify;
+				PRODUCT_NAME = "WiFi QR Go";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -425,18 +281,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = wifymac/wifymac.entitlements;
+				CODE_SIGN_ENTITLEMENTS = wifiqrgo/wifiqrgo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_ASSET_PATHS = "\"wifymac/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_ASSET_PATHS = "\"wifiqrgo/Preview Content\"";
 				DEVELOPMENT_TEAM = D4FZ7G9587;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Wify;
-				INFOPLIST_KEY_CFBundleName = Wify;
+				INFOPLIST_KEY_CFBundleDisplayName = "WiFi QR Go";
+				INFOPLIST_KEY_CFBundleName = "WiFi QR Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -444,87 +300,19 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymac;
-				PRODUCT_NAME = Wify;
+				PRODUCT_NAME = "WiFi QR Go";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
-		E1AD026E2D8820B8009B6637 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = D4FZ7G9587;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.7;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymacTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wify";
-			};
-			name = Debug;
-		};
-		E1AD026F2D8820B8009B6637 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = D4FZ7G9587;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.7;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymacTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wify.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wify";
-			};
-			name = Release;
-		};
-		E1AD02712D8820B8009B6637 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = D4FZ7G9587;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymacUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = wifymac;
-			};
-			name = Debug;
-		};
-		E1AD02722D8820B8009B6637 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = D4FZ7G9587;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yilinjuang.wifymacUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = wifymac;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E1AD02402D8820B6009B6637 /* Build configuration list for PBXProject "wifymac" */ = {
+		E1AD02402D8820B6009B6637 /* Build configuration list for PBXProject "wifiqrgo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E1AD02682D8820B8009B6637 /* Debug */,
@@ -533,29 +321,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E1AD026A2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymac" */ = {
+		E1AD026A2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "WiFiQRGo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E1AD026B2D8820B8009B6637 /* Debug */,
 				E1AD026C2D8820B8009B6637 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E1AD026D2D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymacTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E1AD026E2D8820B8009B6637 /* Debug */,
-				E1AD026F2D8820B8009B6637 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E1AD02702D8820B8009B6637 /* Build configuration list for PBXNativeTarget "wifymacUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E1AD02712D8820B8009B6637 /* Debug */,
-				E1AD02722D8820B8009B6637 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

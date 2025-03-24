@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  wifymac
+//  WiFiQRGo
 //
 //  Created by Yi-Lin Juang on 2025/3/17.
 //

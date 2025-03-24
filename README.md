@@ -1,16 +1,11 @@
-# Wify for Mac
+# WiFi QR Go
 
 A macOS application that scans Wi-Fi QR codes and connects to the corresponding Wi-Fi network.
 
 ## Installation
 
-1. Go to the [Releases](https://github.com/yilinjuang/wify-mac/releases) page
-2. Download the latest release (Wify.zip)
-3. Extract the zip file
-4. Drag the Wify application to your Applications folder
-5. Open Wify from your Applications folder
-
-If you receive a security warning when first opening the app, right-click (or Control-click) on the app icon and select "Open" from the context menu, then click "Open" in the dialog that appears.
+1. Install the app from the [App Store](https://apps.apple.com/tw/app/wifi-qr-go/id6743514951)
+2. Open WiFi QR Go from your Applications folder
 
 ## Usage
 
