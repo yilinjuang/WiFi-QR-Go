@@ -10,10 +10,10 @@ A macOS application that scans Wi-Fi QR codes and connects to the corresponding 
 ## Usage
 
 1. Launch the application
-2. Grant camera permissions when prompted
+2. Grant camera and location permissions when prompted
 3. Point your camera at a Wi-Fi QR code
 4. Confirm the connection when prompted
-5. The app will connect to the Wi-Fi network
+5. The app will connect to the Wi-Fi network automatically
 
 ## Why I Built This
 
@@ -28,8 +28,9 @@ I also built [Wify for Android](https://github.com/yilinjuang/wify), which extra
 - Scan Wi-Fi QR codes using your Mac's camera
 - Import QR code images from your device
 - One-click connection to detected networks
+- Automatic retry when permissions are granted
 - Support for WPA/WPA2/WPA3 and open networks
-- Native macOS interface
+- Native macOS interface with intuitive permission handling
 - Smart signal selection for reliable connections
 - Copy network passwords to clipboard for manual connections
 
@@ -37,20 +38,23 @@ I also built [Wify for Android](https://github.com/yilinjuang/wify), which extra
 
 - macOS 11.0 (Big Sur) or later
 - Mac with a built-in camera or connected webcam
+- Location Services enabled (required on macOS 13+ for WiFi network scanning)
 
 ## Privacy
 
-- Only accesses the camera when the app is running
+- Camera access: Only used when the app is running to scan QR codes
+- Location access: Required by macOS to read WiFi network names (SSIDs). Your location is not tracked or stored
 - Does not store or transmit Wi-Fi credentials
 - Only connects to networks with user confirmation
 
 ## Technical Details
 
-- Swift 5
+- Swift 5 with modern concurrency (async/await)
 - SwiftUI for the user interface
 - AVFoundation for camera access
 - Vision framework for QR code detection
 - CoreWLAN for Wi-Fi connectivity
+- CoreLocation for WiFi network access permissions
 
 ## Demo
 
