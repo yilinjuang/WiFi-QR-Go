@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var connectionError: Error?
     @State private var showingConnectionError = false
     @State private var activeToast: ToastMessage?
+    @State private var pendingConnectionCredentials: WiFiCredentials?
 
     var body: some View {
         VStack {
@@ -62,6 +63,25 @@ struct ContentView: View {
             cameraManager.onWiFiQRCodeDetected = { [weak viewModel] credentials in
                 viewModel?.wifiCredentials = credentials
                 viewModel?.showingCredentialsAlert = true
+            }
+
+            // Set up location permission granted callback
+            Task { @MainActor in
+                LocationManager.shared.onPermissionGranted = {
+                    // If we have pending credentials, auto-retry the connection
+                    if let credentials = self.pendingConnectionCredentials {
+                        self.showToast(.info(message: "Location permission granted! Retrying connection...", icon: "location.fill"))
+
+                        // Clear pending credentials and retry
+                        self.pendingConnectionCredentials = nil
+
+                        // Wait a brief moment for the toast to show
+                        Task {
+                            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                            await self.performConnection(to: credentials)
+                        }
+                    }
+                }
             }
         }
         .alert("Connect to \(viewModel.wifiCredentials?.ssid ?? "Wi-Fi")?", isPresented: $viewModel.showingCredentialsAlert) {
@@ -142,28 +162,50 @@ struct ContentView: View {
     private func connectToWiFi() {
         guard let credentials = viewModel.wifiCredentials else { return }
 
-        isConnecting = true
-        // Show connecting toast with ProgressView and make it persist
-        showToast(ToastMessage.connecting(message: "Connecting to \(credentials.ssid)"), duration: nil)
-
         Task {
-            do {
-                try await WiFiService.shared.connect(to: credentials)
-                await MainActor.run {
-                    isConnecting = false
-                    // Replace the connecting toast with success toast
-                    showToast(.success(message: "Successfully connected to \(credentials.ssid)", icon: "wifi"))
+            await performConnection(to: credentials)
+        }
+    }
+
+    private func performConnection(to credentials: WiFiCredentials) async {
+        await MainActor.run {
+            isConnecting = true
+            // Show connecting toast with ProgressView and make it persist
+            showToast(ToastMessage.connecting(message: "Connecting to \(credentials.ssid)"), duration: nil)
+        }
+
+        do {
+            try await WiFiService.shared.connect(to: credentials)
+            await MainActor.run {
+                isConnecting = false
+                pendingConnectionCredentials = nil // Clear any pending credentials on success
+                // Replace the connecting toast with success toast
+                showToast(.success(message: "Successfully connected to \(credentials.ssid)", icon: "wifi"))
+            }
+        } catch {
+            await MainActor.run {
+                isConnecting = false
+                // Clear the connecting toast
+                withAnimation {
+                    activeToast = nil
                 }
-            } catch {
-                await MainActor.run {
-                    isConnecting = false
-                    // Clear the connecting toast when showing the error alert
-                    withAnimation {
-                        activeToast = nil
-                    }
-                    connectionError = error
-                    showingConnectionError = true
+
+                // Check if user cancelled (e.g., went to open System Settings)
+                // In that case, don't show the error dialog
+                if let wifiError = error as? WiFiConnectionError,
+                   case .userCancelled = wifiError {
+                    // User is taking action to fix the issue, save credentials for auto-retry
+                    pendingConnectionCredentials = credentials
+                    showToast(.info(message: "Waiting for location permission...", icon: "hourglass"), duration: nil)
+                    return
                 }
+
+                // Clear pending credentials on other errors
+                pendingConnectionCredentials = nil
+
+                // Show error for all other cases
+                connectionError = error
+                showingConnectionError = true
             }
         }
     }

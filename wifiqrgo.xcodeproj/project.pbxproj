@@ -264,16 +264,27 @@
 				DEVELOPMENT_TEAM = D4FZ7G9587;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
 				ENABLE_RESOURCE_ACCESS_CAMERA = YES;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = YES;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WiFiQRGo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "WiFi QR Go";
 				INFOPLIST_KEY_CFBundleName = "WiFi QR Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "WiFi QR Go needs access to your location to scan and identify nearby WiFi networks.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\nWiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\nWiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\n";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -302,16 +313,27 @@
 				DEVELOPMENT_TEAM = D4FZ7G9587;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
 				ENABLE_RESOURCE_ACCESS_CAMERA = YES;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = YES;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WiFiQRGo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "WiFi QR Go";
 				INFOPLIST_KEY_CFBundleName = "WiFi QR Go";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to scan Wi-Fi QR codes";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "WiFi QR Go needs access to your location to scan and identify nearby WiFi networks.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\nWiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\nWiFi QR Go needs access to your location to scan and identify nearby WiFi networks. This is required by macOS to read WiFi network names (SSIDs).\n";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

@@ -12,7 +12,9 @@ struct WiFiCredentials {
     // Parse Wi-Fi credentials from QR code content
     static func parse(from qrCodeContent: String) -> WiFiCredentials? {
         // QR code format for Wi-Fi is typically: WIFI:S:<SSID>;T:<Authentication Type>;P:<Password>;;
-        guard qrCodeContent.hasPrefix("WIFI:") else { return nil }
+        guard qrCodeContent.hasPrefix("WIFI:") else {
+            return nil
+        }
 
         var ssid = ""
         var password: String? = nil

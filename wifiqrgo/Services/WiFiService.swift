@@ -1,6 +1,7 @@
 import Foundation
 import CoreWLAN
 import AppKit
+import CoreLocation
 
 enum WiFiConnectionError: Error {
     case noInterface
@@ -8,6 +9,8 @@ enum WiFiConnectionError: Error {
     case networkNotFound
     case missingPassword
     case maxRetriesExceeded
+    case locationPermissionDenied
+    case userCancelled // User cancelled operation (e.g., going to settings)
 }
 
 class WiFiService {
@@ -22,6 +25,38 @@ class WiFiService {
     func connect(to credentials: WiFiCredentials) async throws {
         guard let interface = wifiClient.interface() else {
             throw WiFiConnectionError.noInterface
+        }
+
+        // Check location authorization (required for WiFi SSID access on macOS)
+        let isAuthorized = await MainActor.run {
+            LocationManager.shared.isAuthorized()
+        }
+
+        if !isAuthorized {
+            let granted = await LocationManager.shared.requestLocationPermission()
+
+            if !granted {
+                // Show alert to user on main thread
+                let userWantsToOpenSettings = await MainActor.run {
+                    let alert = NSAlert()
+                    alert.messageText = "Location Permission Required"
+                    alert.informativeText = "WiFi QR Go needs location access to scan and identify WiFi networks. This is a macOS requirement for accessing WiFi network names (SSIDs).\n\nPlease enable location services in System Settings."
+                    alert.alertStyle = .warning
+                    alert.addButton(withTitle: "Open System Settings")
+                    alert.addButton(withTitle: "Cancel")
+
+                    let response = alert.runModal()
+                    if response == .alertFirstButtonReturn {
+                        LocationManager.shared.openSystemSettings()
+                        return true
+                    }
+                    return false
+                }
+
+                // If user chose to open settings, throw userCancelled (don't show error)
+                // If user clicked cancel, throw locationPermissionDenied (show error)
+                throw userWantsToOpenSettings ? WiFiConnectionError.userCancelled : WiFiConnectionError.locationPermissionDenied
+            }
         }
 
         // Check if password is required but not provided
@@ -39,10 +74,8 @@ class WiFiService {
                 let network = try await scanForNetwork(interface: interface, ssid: credentials.ssid, retryAttempt: currentRetry)
 
                 if let password = credentials.password {
-                    // Connect to network with password
                     try interface.associate(to: network, password: password)
                 } else {
-                    // Connect to open network
                     try interface.associate(to: network, password: nil)
                 }
 
@@ -55,15 +88,12 @@ class WiFiService {
 
                 // Only retry if this is a known retryable error
                 if !isRetryableError(error) {
-                    // If not a retryable error, rethrow immediately
                     throw WiFiConnectionError.connectionFailed(error.localizedDescription)
                 }
 
                 if currentRetry < maxRetries {
                     // Calculate delay with exponential backoff
                     let delay = calculateBackoffDelay(retry: currentRetry)
-                    print("WiFi connection attempt \(currentRetry) failed, retrying in \(delay) seconds...")
-
                     // Wait before next retry
                     try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
                 }
@@ -85,24 +115,18 @@ class WiFiService {
         }
 
         var scanAttempt = 0
-        let maxScanAttempts = 3 // Maximum attempts for scanning specifically
+        let maxScanAttempts = 3
 
         while scanAttempt < maxScanAttempts {
             do {
-                // Scan for the specific network
                 let networks = try interface.scanForNetworks(withSSID: ssidData)
 
-                // Check if the network was found
                 guard !networks.isEmpty else {
                     throw WiFiConnectionError.networkNotFound
                 }
 
-                // If multiple networks with the same SSID were found, pick the one with the strongest signal
-                let bestNetwork = networks.sorted { network1, network2 in
-                    // Higher RSSI value (less negative) means stronger signal
-                    return network1.rssiValue > network2.rssiValue
-                }.first!
-
+                // Pick the network with the strongest signal (highest RSSI)
+                let bestNetwork = networks.sorted { $0.rssiValue > $1.rssiValue }.first!
                 return bestNetwork
 
             } catch let error as NSError {
@@ -110,9 +134,7 @@ class WiFiService {
 
                 // Error code 16 is EBUSY - "Resource busy"
                 if error.code == 16 && scanAttempt < maxScanAttempts {
-                    // Add a small delay between scan attempts, increasing with each retry
                     let scanDelay = 0.2 * Double(scanAttempt + retryAttempt)
-                    print("WiFi scan attempt \(scanAttempt) failed with error code \(error.code), retrying in \(scanDelay) seconds...")
                     try await Task.sleep(nanoseconds: UInt64(scanDelay * 1_000_000_000))
                 } else if scanAttempt >= maxScanAttempts {
                     throw error
@@ -137,12 +159,23 @@ class WiFiService {
     private func isRetryableError(_ error: Error) -> Bool {
         let nsError = error as NSError
 
-        // Error code 16 = Resource busy
-        // Error code -3900 to -3910 = Various network errors that may be temporary
-        let retryableCodes = [16, -3900, -3901, -3902, -3903, -3904, -3905]
+        // Error codes that indicate temporary issues we should retry
+        let retryableCodes = [
+            16,      // EBUSY - Resource busy
+            -3900,   // Generic error
+            -3901,   // No memory
+            -3902,   // Unknown error
+            -3903,   // Not supported
+            -3904,   // Invalid parameter
+            -3905,   // No such property
+            -3906,   // No such SSID
+            -3913,   // Op not permitted
+            -3924,   // Power off
+        ]
 
         return retryableCodes.contains(nsError.code) ||
-               nsError.domain == "com.apple.wifi.apple80211API.error"
+               nsError.domain == "com.apple.wifi.apple80211API.error" ||
+               nsError.domain.contains("CoreWLAN")
     }
 
     func openNetworkPreferences() {
