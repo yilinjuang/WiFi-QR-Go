@@ -2,6 +2,8 @@ import Foundation
 import AppKit
 @preconcurrency import CoreLocation
 
+/// Manages location services authorization required for WiFi SSID access on macOS.
+/// On macOS 13+, accessing WiFi network names requires location permission.
 @MainActor
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocationManager()
@@ -10,7 +12,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     private var authorizationContinuation: CheckedContinuation<Bool, Never>?
 
-    // Callback for when permission is granted after being denied
+    /// Callback invoked when location permission is granted after being denied
     var onPermissionGranted: (() -> Void)?
 
     private override init() {
@@ -36,21 +38,22 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
+    /// Requests location permission from the user.
+    /// - Returns: `true` if permission is granted, `false` otherwise.
     func requestLocationPermission() async -> Bool {
         switch authorizationStatus {
         case .notDetermined:
             return await withCheckedContinuation { continuation in
                 self.authorizationContinuation = continuation
 
-                // Request authorization (already on main thread via @MainActor)
                 self.locationManager.requestWhenInUseAuthorization()
 
-                // Request location to trigger the callback (macOS workaround)
+                // Trigger authorization callback on macOS (workaround for delegate not firing)
                 self.locationManager.requestLocation()
 
-                // Add a timeout in case the callback never fires
+                // Timeout fallback if delegate callback doesn't fire
                 Task {
-                    try? await Task.sleep(nanoseconds: 10_000_000_000) // 10 seconds
+                    try? await Task.sleep(nanoseconds: 10_000_000_000)
                     if self.authorizationContinuation != nil {
                         self.authorizationContinuation = nil
                         let isAuthorized = self.locationManager.authorizationStatus == .authorizedAlways ||
@@ -68,30 +71,35 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
+    /// Checks if location services are currently authorized.
+    /// - Returns: `true` if authorized, `false` otherwise.
     func isAuthorized() -> Bool {
-        return authorizationStatus == .authorizedAlways || authorizationStatus == .authorized
+        authorizationStatus == .authorizedAlways || authorizationStatus == .authorized
     }
 
+    /// Opens System Settings to the Location Services privacy panel.
     func openSystemSettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
-            NSWorkspace.shared.open(url)
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") else {
+            return
         }
+        NSWorkspace.shared.open(url)
     }
 
-    // CLLocationManagerDelegate methods
+    // MARK: - CLLocationManagerDelegate
+
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         Task { @MainActor in
             let oldStatus = authorizationStatus
             authorizationStatus = manager.authorizationStatus
 
-            // Resume the continuation if we were waiting for authorization
+            // Resume pending authorization request
             if let continuation = authorizationContinuation {
                 authorizationContinuation = nil
                 let isAuthorized = authorizationStatus == .authorizedAlways || authorizationStatus == .authorized
                 continuation.resume(returning: isAuthorized)
             }
 
-            // Check if permission was just granted (changed from denied/notDetermined to authorized)
+            // Notify if permission was just granted
             let wasUnauthorized = oldStatus == .denied || oldStatus == .notDetermined || oldStatus == .restricted
             let isNowAuthorized = authorizationStatus == .authorized || authorizationStatus == .authorizedAlways
 
@@ -102,11 +110,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // Location update received (only needed to trigger authorization callback on macOS)
+        // Required for requestLocation(), but we don't need the actual location data
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        // Ignore location errors, we only care about authorization
+        // Location errors are ignored; we only need authorization status
     }
 }
 

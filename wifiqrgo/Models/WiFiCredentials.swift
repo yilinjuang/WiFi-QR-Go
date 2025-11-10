@@ -1,5 +1,6 @@
 import Foundation
 
+/// WiFi network credentials parsed from a QR code.
 struct WiFiCredentials {
     let ssid: String
     let password: String?
@@ -9,9 +10,10 @@ struct WiFiCredentials {
         !ssid.isEmpty
     }
 
-    // Parse Wi-Fi credentials from QR code content
+    /// Parses WiFi credentials from a QR code string.
+    /// - Parameter qrCodeContent: The QR code content string in format: `WIFI:S:<SSID>;T:<Type>;P:<Password>;;`
+    /// - Returns: Parsed credentials or `nil` if format is invalid.
     static func parse(from qrCodeContent: String) -> WiFiCredentials? {
-        // QR code format for Wi-Fi is typically: WIFI:S:<SSID>;T:<Authentication Type>;P:<Password>;;
         guard qrCodeContent.hasPrefix("WIFI:") else {
             return nil
         }

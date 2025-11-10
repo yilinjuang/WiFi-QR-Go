@@ -2,16 +2,17 @@ import AVFoundation
 import Vision
 import SwiftUI
 
+/// Manages camera capture session and WiFi QR code detection.
 class CameraManager: NSObject, ObservableObject {
     @Published var error: Error?
     @Published var isAuthorized = false
 
-    // Callback for when a WiFi QR code is detected
+    /// Callback invoked when a WiFi QR code is detected in the camera feed
     var onWiFiQRCodeDetected: ((WiFiCredentials) -> Void)?
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
-    private var videoOutput = AVCaptureVideoDataOutput()
+    private let videoOutput = AVCaptureVideoDataOutput()
 
     override init() {
         super.init()
@@ -43,37 +44,21 @@ class CameraManager: NSObject, ObservableObject {
         let session = AVCaptureSession()
         session.sessionPreset = .high
 
-        // Get front camera
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
-            // Fallback to any available camera if front camera is not available
-            guard let device = AVCaptureDevice.default(for: .video) else {
-                error = NSError(domain: "CameraManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No camera available"])
-                return
-            }
-
-            do {
-                let input = try AVCaptureDeviceInput(device: device)
-                if session.canAddInput(input) {
-                    session.addInput(input)
-                }
-            } catch {
-                self.error = error
-                return
-            }
-
+        // Try to get front camera first, fallback to any available camera
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+                         ?? AVCaptureDevice.default(for: .video) else {
+            error = NSError(domain: "CameraManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "No camera available"])
             return
         }
 
         do {
             let input = try AVCaptureDeviceInput(device: device)
-            if session.canAddInput(input) {
-                session.addInput(input)
-            }
+            guard session.canAddInput(input) else { return }
+            session.addInput(input)
 
-            if session.canAddOutput(videoOutput) {
-                session.addOutput(videoOutput)
-                videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
-            }
+            guard session.canAddOutput(videoOutput) else { return }
+            session.addOutput(videoOutput)
+            videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
 
             self.captureSession = session
 
@@ -89,37 +74,38 @@ class CameraManager: NSObject, ObservableObject {
         self.captureSession?.stopRunning()
     }
 
+    /// Returns the camera preview layer for displaying in the UI.
+    /// The layer is created lazily and reused.
+    /// - Returns: The preview layer, or `nil` if no capture session exists.
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
-        guard let session = self.captureSession else {
-            return nil
-        }
+        guard let session = captureSession else { return nil }
 
-        if self.previewLayer == nil {
+        if previewLayer == nil {
             let layer = AVCaptureVideoPreviewLayer(session: session)
             layer.videoGravity = .resizeAspectFill
 
-            // Mirror the preview horizontally for a more intuitive user experience
+            // Mirror horizontally for intuitive user experience
             layer.connection?.automaticallyAdjustsVideoMirroring = false
             layer.connection?.isVideoMirrored = true
 
-            self.previewLayer = layer
+            previewLayer = layer
         }
 
-        return self.previewLayer
+        return previewLayer
     }
 }
+
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        // Use the QRCodeProcessingService to detect QR codes
         QRCodeProcessingService.shared.processQRCodeFromCameraFrame(pixelBuffer) { [weak self] credentials in
-            if let credentials = credentials {
-                DispatchQueue.main.async {
-                    // Notify about the detected QR code
-                    self?.onWiFiQRCodeDetected?(credentials)
-                }
+            guard let credentials = credentials else { return }
+
+            DispatchQueue.main.async {
+                self?.onWiFiQRCodeDetected?(credentials)
             }
         }
     }

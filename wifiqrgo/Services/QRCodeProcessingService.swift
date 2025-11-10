@@ -3,87 +3,70 @@ import Vision
 import CoreImage
 import AppKit
 
+/// Processes QR codes from images and camera frames to extract WiFi credentials.
 class QRCodeProcessingService {
     static let shared = QRCodeProcessingService()
 
     private init() {}
 
-    // Process QR code from an image file
+    /// Processes a QR code from an image file.
+    /// - Parameters:
+    ///   - url: The URL of the image file to process.
+    ///   - completion: Callback with extracted credentials or `nil` if no valid QR code found.
     func processQRCodeImage(_ url: URL, completion: @escaping (WiFiCredentials?) -> Void) {
-        guard let nsImage = NSImage(contentsOf: url) else {
-            print("Failed to load image")
+        guard let nsImage = NSImage(contentsOf: url),
+              let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
             completion(nil)
             return
         }
 
-        // Convert NSImage to CGImage
-        guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-            print("Failed to convert to CGImage")
-            completion(nil)
-            return
-        }
-
-        detectQRCode(in: cgImage, completion: completion)
+        detectQRCodeFromCGImage(cgImage, completion: completion)
     }
 
-    // Process QR code from a camera frame
+    /// Processes a QR code from a camera video frame.
+    /// - Parameters:
+    ///   - pixelBuffer: The pixel buffer from the camera frame.
+    ///   - completion: Callback with extracted credentials or `nil` if no valid QR code found.
     func processQRCodeFromCameraFrame(_ pixelBuffer: CVPixelBuffer, completion: @escaping (WiFiCredentials?) -> Void) {
-        detectQRCode(in: pixelBuffer, completion: completion)
+        detectQRCodeFromPixelBuffer(pixelBuffer, completion: completion)
     }
 
-    // Generic QR code detection from any Vision-compatible image
-    private func detectQRCode(in image: Any, completion: @escaping (WiFiCredentials?) -> Void) {
-        // Create a Vision request to detect barcodes
+    /// Detects and parses QR codes from a CGImage using Vision framework.
+    private func detectQRCodeFromCGImage(_ cgImage: CGImage, completion: @escaping (WiFiCredentials?) -> Void) {
+        let request = createBarcodeRequest(completion: completion)
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        try? handler.perform([request])
+    }
+
+    /// Detects and parses QR codes from a CVPixelBuffer using Vision framework.
+    private func detectQRCodeFromPixelBuffer(_ pixelBuffer: CVPixelBuffer, completion: @escaping (WiFiCredentials?) -> Void) {
+        let request = createBarcodeRequest(completion: completion)
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
+        try? handler.perform([request])
+    }
+
+    /// Creates a barcode detection request configured for WiFi QR codes.
+    private func createBarcodeRequest(completion: @escaping (WiFiCredentials?) -> Void) -> VNDetectBarcodesRequest {
         let request = VNDetectBarcodesRequest { request, error in
-            if let error = error {
-                print("Vision error: \(error.localizedDescription)")
+            guard error == nil,
+                  let results = request.results as? [VNBarcodeObservation] else {
                 completion(nil)
                 return
             }
 
-            guard let results = request.results as? [VNBarcodeObservation] else {
-                print("No barcode detected")
-                completion(nil)
-                return
-            }
-
-            // Look for QR codes
+            // Find and parse WiFi QR codes
             for result in results where result.symbology == .qr {
-                if let payloadString = result.payloadStringValue {
-                    // Process the QR code content
-                    if let credentials = WiFiCredentials.parse(from: payloadString) {
-                        completion(credentials)
-                        return
-                    }
+                if let payloadString = result.payloadStringValue,
+                   let credentials = WiFiCredentials.parse(from: payloadString) {
+                    completion(credentials)
+                    return
                 }
             }
 
             completion(nil)
         }
 
-        // Set the barcode types to QR code only
         request.symbologies = [.qr]
-
-        // Create a handler to process the image
-        let handler: VNImageRequestHandler
-
-        // Use type-specific handling instead of conditional checks
-        if CFGetTypeID(image as CFTypeRef) == CVPixelBufferGetTypeID() {
-            handler = VNImageRequestHandler(cvPixelBuffer: image as! CVPixelBuffer, options: [:])
-        } else if CFGetTypeID(image as CFTypeRef) == CGImage.typeID {
-            handler = VNImageRequestHandler(cgImage: image as! CGImage, options: [:])
-        } else {
-            print("Unsupported image type")
-            completion(nil)
-            return
-        }
-
-        // Perform the request
-        do {
-            try handler.perform([request])
-        } catch {
-            print("Failed to perform Vision request: \(error.localizedDescription)")
-            completion(nil)
-        }
+        return request
     }
 }

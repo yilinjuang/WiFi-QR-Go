@@ -3,6 +3,7 @@ import CoreWLAN
 import AppKit
 import CoreLocation
 
+/// Errors that can occur during WiFi connection operations.
 enum WiFiConnectionError: Error {
     case noInterface
     case connectionFailed(String)
@@ -10,57 +11,32 @@ enum WiFiConnectionError: Error {
     case missingPassword
     case maxRetriesExceeded
     case locationPermissionDenied
-    case userCancelled // User cancelled operation (e.g., going to settings)
+    case userCancelled
 }
 
+/// Manages WiFi network scanning and connection operations using CoreWLAN.
 class WiFiService {
     static let shared = WiFiService()
 
     private let wifiClient = CWWiFiClient.shared()
     private let maxRetries = 5
-    private let initialBackoffDelay: TimeInterval = 0.5 // Initial delay in seconds
+    private let initialBackoffDelay: TimeInterval = 0.5
 
     private init() {}
 
+    /// Connects to a WiFi network using the provided credentials.
+    /// - Parameter credentials: The WiFi network credentials from a QR code.
+    /// - Throws: `WiFiConnectionError` if connection fails.
     func connect(to credentials: WiFiCredentials) async throws {
         guard let interface = wifiClient.interface() else {
             throw WiFiConnectionError.noInterface
         }
 
-        // Check location authorization (required for WiFi SSID access on macOS)
-        let isAuthorized = await MainActor.run {
-            LocationManager.shared.isAuthorized()
-        }
+        // Verify location permission (required for WiFi SSID access on macOS 13+)
+        try await ensureLocationPermission()
 
-        if !isAuthorized {
-            let granted = await LocationManager.shared.requestLocationPermission()
-
-            if !granted {
-                // Show alert to user on main thread
-                let userWantsToOpenSettings = await MainActor.run {
-                    let alert = NSAlert()
-                    alert.messageText = "Location Permission Required"
-                    alert.informativeText = "WiFi QR Go needs location access to scan and identify WiFi networks. This is a macOS requirement for accessing WiFi network names (SSIDs).\n\nPlease enable location services in System Settings."
-                    alert.alertStyle = .warning
-                    alert.addButton(withTitle: "Open System Settings")
-                    alert.addButton(withTitle: "Cancel")
-
-                    let response = alert.runModal()
-                    if response == .alertFirstButtonReturn {
-                        LocationManager.shared.openSystemSettings()
-                        return true
-                    }
-                    return false
-                }
-
-                // If user chose to open settings, throw userCancelled (don't show error)
-                // If user clicked cancel, throw locationPermissionDenied (show error)
-                throw userWantsToOpenSettings ? WiFiConnectionError.userCancelled : WiFiConnectionError.locationPermissionDenied
-            }
-        }
-
-        // Check if password is required but not provided
-        if credentials.encryptionType != nil && credentials.encryptionType != "nopass" && credentials.password == nil {
+        // Validate credentials
+        guard credentials.encryptionType == nil || credentials.encryptionType == "nopass" || credentials.password != nil else {
             throw WiFiConnectionError.missingPassword
         }
 
@@ -108,7 +84,42 @@ class WiFiService {
         }
     }
 
-    // Scans for a specific network with retries
+    // MARK: - Private Methods
+
+    /// Ensures location permission is granted. Shows alert if denied.
+    /// - Throws: `WiFiConnectionError.locationPermissionDenied` or `.userCancelled`
+    private func ensureLocationPermission() async throws {
+        let isAuthorized = await MainActor.run {
+            LocationManager.shared.isAuthorized()
+        }
+
+        guard !isAuthorized else { return }
+
+        let granted = await LocationManager.shared.requestLocationPermission()
+
+        guard !granted else { return }
+
+        // Show alert to user
+        let userWantsToOpenSettings = await MainActor.run {
+            let alert = NSAlert()
+            alert.messageText = "Location Permission Required"
+            alert.informativeText = "WiFi QR Go needs location access to scan and identify WiFi networks. This is a macOS requirement for accessing WiFi network names (SSIDs).\n\nPlease enable location services in System Settings."
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "Open System Settings")
+            alert.addButton(withTitle: "Cancel")
+
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                LocationManager.shared.openSystemSettings()
+                return true
+            }
+            return false
+        }
+
+        throw userWantsToOpenSettings ? WiFiConnectionError.userCancelled : WiFiConnectionError.locationPermissionDenied
+    }
+
+    /// Scans for a specific network with retry logic.
     private func scanForNetwork(interface: CWInterface, ssid: String, retryAttempt: Int) async throws -> CWNetwork {
         guard let ssidData = ssid.data(using: .utf8) else {
             throw WiFiConnectionError.networkNotFound
@@ -132,12 +143,10 @@ class WiFiService {
             } catch let error as NSError {
                 scanAttempt += 1
 
-                // Error code 16 is EBUSY - "Resource busy"
+                // Retry on EBUSY (error code 16) - "Resource busy"
                 if error.code == 16 && scanAttempt < maxScanAttempts {
                     let scanDelay = 0.2 * Double(scanAttempt + retryAttempt)
                     try await Task.sleep(nanoseconds: UInt64(scanDelay * 1_000_000_000))
-                } else if scanAttempt >= maxScanAttempts {
-                    throw error
                 } else {
                     throw error
                 }
@@ -147,30 +156,32 @@ class WiFiService {
         throw WiFiConnectionError.networkNotFound
     }
 
-    // Calculate delay with exponential backoff
+    /// Calculates retry delay using exponential backoff with jitter.
+    /// - Parameter retry: The current retry attempt number (1-based).
+    /// - Returns: The delay in seconds before the next retry.
     private func calculateBackoffDelay(retry: Int) -> TimeInterval {
-        // Exponential backoff with some randomness to avoid thundering herd
         let exponentialDelay = initialBackoffDelay * pow(2.0, Double(retry - 1))
         let jitter = Double.random(in: 0...0.3) * exponentialDelay
         return exponentialDelay + jitter
     }
 
-    // Determine if an error is retryable
+    /// Determines if an error should be retried based on error code and domain.
+    /// - Parameter error: The error to check.
+    /// - Returns: `true` if the error is transient and should be retried.
     private func isRetryableError(_ error: Error) -> Bool {
         let nsError = error as NSError
 
-        // Error codes that indicate temporary issues we should retry
         let retryableCodes = [
             16,      // EBUSY - Resource busy
-            -3900,   // Generic error
+            -3900,   // Generic CoreWLAN error
             -3901,   // No memory
             -3902,   // Unknown error
             -3903,   // Not supported
             -3904,   // Invalid parameter
             -3905,   // No such property
             -3906,   // No such SSID
-            -3913,   // Op not permitted
-            -3924,   // Power off
+            -3913,   // Operation not permitted
+            -3924,   // Interface powered off
         ]
 
         return retryableCodes.contains(nsError.code) ||
@@ -178,8 +189,11 @@ class WiFiService {
                nsError.domain.contains("CoreWLAN")
     }
 
+    /// Opens System Settings to the Wi-Fi network preferences panel.
     func openNetworkPreferences() {
-        let url = URL(string: "x-apple.systempreferences:com.apple.preference.network?Wi-Fi")!
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.network?Wi-Fi") else {
+            return
+        }
         NSWorkspace.shared.open(url)
     }
 }
