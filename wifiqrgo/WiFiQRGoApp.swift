@@ -28,6 +28,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.setFrameOrigin(NSPoint(x: x, y: y))
             window.makeKeyAndOrderFront(nil)
         }
+
+        // Remove empty menus that SwiftUI creates but we don't need
+        // (macOS 13.0 compatible approach - CommandGroup(replacing:) only empties menus, doesn't remove them)
+        DispatchQueue.main.async {
+            self.removeUnwantedMenus()
+        }
+    }
+
+    private func removeUnwantedMenus() {
+        guard let mainMenu = NSApplication.shared.mainMenu else { return }
+
+        // Menu titles to remove (keep only "WiFi QR Go" app menu and "File" menu)
+        let menusToRemove = ["Format", "View", "Window", "Help"]
+
+        for title in menusToRemove {
+            if let index = mainMenu.items.firstIndex(where: { $0.title == title }) {
+                mainMenu.removeItem(at: index)
+            }
+        }
     }
 }
 
@@ -47,7 +66,6 @@ struct WiFiQRGoApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
-        .commandsRemoved()
         .commands {
             // App menu - About WiFi QR Go
             CommandGroup(replacing: .appInfo) {
@@ -81,6 +99,23 @@ struct WiFiQRGoApp: App {
                 }
                 .keyboardShortcut("i", modifiers: .command)
             }
+        }
+        .commands {
+            CommandGroup(replacing: .newItem) { }
+            CommandGroup(replacing: .saveItem) { }
+            CommandGroup(replacing: .printItem) { }
+            CommandGroup(replacing: .undoRedo) { }
+            CommandGroup(replacing: .pasteboard) { }
+            CommandGroup(replacing: .textEditing) { }
+            CommandGroup(replacing: .textFormatting) { }
+        }
+        .commands {
+            CommandGroup(replacing: .sidebar) { }
+            CommandGroup(replacing: .toolbar) { }
+            CommandGroup(replacing: .windowList) { }
+            CommandGroup(replacing: .windowArrangement) { }
+            CommandGroup(replacing: .help) { }
+            CommandGroup(replacing: .systemServices) { }
         }
     }
 
